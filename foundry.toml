@@ -4,3 +4,6 @@ out = 'out'
 libs = ['lib']
 ffi = true
 evm_version = 'shanghai'
+
+[fuzz]
+seed = '90098008'

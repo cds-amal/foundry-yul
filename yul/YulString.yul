@@ -184,6 +184,11 @@ object "YulString" {
             function slotsForLength(len) -> s {
                 // (len // 32) + 1
                 s := add(shr(5, len), 1)
+
+                // if len % 32 == 0, subtract 1
+                if eq(shl(5, shr(5, len)), len) {
+                    s := sub(s, 1)
+                }
             }
         }
     }

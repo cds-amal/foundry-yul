@@ -2,34 +2,28 @@
 pragma solidity 0.8.20;
 
 import "forge-std/Test.sol";
-import "./lib/YulDeployer.sol";
 import "forge-std/console.sol";
-
-interface YulString {
-    function value() external returns(string memory);
-    function setValue(string memory input) external;
-}
+import "../src/IString.sol";
 
 contract ExampleTest is Test {
-    YulDeployer yulDeployer = new YulDeployer();
 
-    YulString str;
+    IString str;
 
     function setUp() public {
-        str = YulString(yulDeployer.deployContract("YulString"));
+        str = new IString();
     }
 
-    // function testFuzz_string(string calldata text) public {
-    //     // vm.assume(bytes(text).length < 64);
-    //     str.setValue(text);
-    //     string memory value = str.value();
-    //     console.log("text: %s", text);
-    //     console.log("value: %s", value);
-    //     assertEq(
-    //       keccak256(abi.encodePacked(text)),
-    //       keccak256(abi.encodePacked(value))
-    //     );
-    // }
+    function testFuzz_string(string calldata text) public {
+        // vm.assume(bytes(text).length < 64);
+        str.setValue(text);
+        string memory value = str.value();
+        console.log("text: %s", text);
+        console.log("value: %s", value);
+        assertEq(
+          keccak256(abi.encodePacked(text)),
+          keccak256(abi.encodePacked(value))
+        );
+    }
 
     function testSmall() public {
         string memory text = "Hello World";
@@ -41,7 +35,7 @@ contract ExampleTest is Test {
 
     function testExactly32() public {
         // string memory text = "10000000200000003000000040000000";
-        string memory text = "000000000000000000000000000000000";
+        string memory text = "00000000000000000000000000000000";
         // string memory text = "000000000000000000000000000000)";
         str.setValue(text);
 
@@ -56,3 +50,4 @@ contract ExampleTest is Test {
         assertEq(text, value);
     }
 }
+
