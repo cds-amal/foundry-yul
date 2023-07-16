@@ -10,7 +10,7 @@ interface YulString {
     function setValue(string memory input) external;
 }
 
-contract ExampleTest is Test {
+contract YulTest is Test {
     YulDeployer yulDeployer = new YulDeployer();
 
     YulString str;
@@ -19,20 +19,30 @@ contract ExampleTest is Test {
         str = YulString(yulDeployer.deployContract("YulString"));
     }
 
-    // function testFuzz_string(string calldata text) public {
-    //     // vm.assume(bytes(text).length < 64);
-    //     str.setValue(text);
-    //     string memory value = str.value();
-    //     console.log("text: %s", text);
-    //     console.log("value: %s", value);
-    //     assertEq(
-    //       keccak256(abi.encodePacked(text)),
-    //       keccak256(abi.encodePacked(value))
-    //     );
-    // }
+    function testFuzz_string(string calldata text) public {
+        // vm.assume(bytes(text).length > 0);
+        str.setValue(text);
+        string memory value = str.value();
+        console.log("text: %s", text);
+        console.log("value: %s", value);
+        emit log(text);
+        emit log(value);
+        assertEq(
+          keccak256(abi.encodePacked(text)),
+          keccak256(abi.encodePacked(value))
+        );
+    }
 
     function testSmall() public {
         string memory text = "Hello World";
+        str.setValue(text);
+
+        string memory value = str.value();
+        assertEq(text, value);
+    }
+
+    function testExactly17() public {
+        string memory text =    "00000000000000001";
         str.setValue(text);
 
         string memory value = str.value();
